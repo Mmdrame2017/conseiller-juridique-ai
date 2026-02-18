@@ -415,6 +415,72 @@
     }
     @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+    /* === DRAPEAU SÉNÉGAL FLOTTANT === */
+    .senegal-flag {
+      position: fixed;
+      bottom: 80px;
+      right: 18px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    }
+
+    /* Mat du drapeau */
+    .flag-pole {
+      width: 2px;
+      height: 54px;
+      background: linear-gradient(to bottom, #b0b0b0, #707070);
+      border-radius: 1px;
+      align-self: flex-start;
+      margin-left: 2px;
+    }
+
+    /* Drapeau tricolore Sénégal */
+    .flag-body {
+      width: 60px;
+      height: 38px;
+      display: flex;
+      overflow: hidden;
+      border-radius: 0 3px 3px 0;
+      transform-origin: left center;
+      animation: flagWave 2.8s ease-in-out infinite;
+      position: relative;
+    }
+    .flag-stripe { flex: 1; height: 100%; }
+    .flag-stripe.green  { background: #00853F; }
+    .flag-stripe.yellow { background: #FDEF42; position: relative; display: flex; align-items: center; justify-content: center; }
+    .flag-stripe.red    { background: #E31B23; }
+
+    /* Étoile verte au centre */
+    .flag-star {
+      position: absolute;
+      font-size: 13px;
+      color: #00853F;
+      line-height: 1;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+
+    /* Animation vague */
+    @keyframes flagWave {
+      0%   { transform: skewY(0deg) scaleX(1); }
+      20%  { transform: skewY(2deg) scaleX(0.97); }
+      40%  { transform: skewY(-1.5deg) scaleX(1.01); }
+      60%  { transform: skewY(2.5deg) scaleX(0.98); }
+      80%  { transform: skewY(-1deg) scaleX(1.01); }
+      100% { transform: skewY(0deg) scaleX(1); }
+    }
+
+    /* Cache le drapeau sur très petits écrans pour ne pas gêner */
+    @media (max-width: 400px) {
+      .senegal-flag { display: none; }
+    }
+
     /* Notification */
     .notification {
       position: fixed;
@@ -1173,5 +1239,18 @@
       speechSynthesis.getVoices();
     }
   </script>
+
+  <!-- Drapeau du Sénégal flottant -->
+  <div class="senegal-flag" title="Sénégal">
+    <div class="flag-body">
+      <div class="flag-stripe green"></div>
+      <div class="flag-stripe yellow">
+        <span class="flag-star">★</span>
+      </div>
+      <div class="flag-stripe red"></div>
+    </div>
+    <div class="flag-pole"></div>
+  </div>
+
 </body>
 </html>
