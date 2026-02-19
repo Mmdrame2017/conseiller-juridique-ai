@@ -791,22 +791,44 @@
         .replace(/===.*?===/gs, '')           // Context markers
         .replace(/\[Source:[^\]]+\]/g, '')    // Source refs
         .replace(/\n{3,}/g, '\n\n')
-        .trim()
-        .slice(0, 1500); // Limit TTS length
+        .trim();
 
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'fr-FR';
-      utterance.rate = 0.95;
-      utterance.pitch = 1;
-
-      // Try to find a French voice
-      const voices = window.speechSynthesis.getVoices();
-      const frVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes('Google'))
-        || voices.find(v => v.lang.startsWith('fr'));
-      if (frVoice) utterance.voice = frVoice;
-
-      currentSpeech = utterance;
-      window.speechSynthesis.speak(utterance);
+      // Browser SpeechSynthesis a une limite ~32KB mais coupe souvent à ~4000 chars.
+      // On découpe en phrases pour lire tout le texte (chunks de 2000 chars max).
+      const MAX_CHUNK = 2000;
+      if (cleanText.length <= MAX_CHUNK) {
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.lang = 'fr-FR'; utterance.rate = 0.95; utterance.pitch = 1;
+        const voices = window.speechSynthesis.getVoices();
+        const frVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes('Google')) || voices.find(v => v.lang.startsWith('fr'));
+        if (frVoice) utterance.voice = frVoice;
+        currentSpeech = utterance;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        // Découper en chunks sur les limites de phrases
+        const chunks = [];
+        let remaining = cleanText;
+        while (remaining.length > 0) {
+          let cut = MAX_CHUNK;
+          if (remaining.length > MAX_CHUNK) {
+            const lastPeriod = remaining.lastIndexOf('. ', MAX_CHUNK);
+            const lastNewline = remaining.lastIndexOf('\n', MAX_CHUNK);
+            cut = Math.max(lastPeriod, lastNewline);
+            if (cut < 100) cut = MAX_CHUNK;
+          }
+          chunks.push(remaining.slice(0, cut + 1).trim());
+          remaining = remaining.slice(cut + 1).trim();
+        }
+        const voices = window.speechSynthesis.getVoices();
+        const frVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes('Google')) || voices.find(v => v.lang.startsWith('fr'));
+        chunks.forEach((chunk, i) => {
+          const utt = new SpeechSynthesisUtterance(chunk);
+          utt.lang = 'fr-FR'; utt.rate = 0.95; utt.pitch = 1;
+          if (frVoice) utt.voice = frVoice;
+          if (i === 0) currentSpeech = utt;
+          window.speechSynthesis.speak(utt);
+        });
+      }
     }
 
     // ========== CHAT LOGIC ==========
