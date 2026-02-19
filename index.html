@@ -853,6 +853,7 @@
 
       } catch (err) {
         removeTyping();
+        console.error('[CJ-AI] Fetch error:', err.name, err.message, err);
         const errMsg = 'Erreur de connexion. Vérifiez l\'URL du webhook et que le workflow est actif.';
         addAiMessage(errMsg, 'question');
         showNotification('Erreur: ' + err.message, 'error');
