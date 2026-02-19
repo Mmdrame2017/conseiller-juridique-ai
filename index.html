@@ -841,9 +841,8 @@
 
         removeTyping();
         const aiResponse = data.response || data.text || data.output || 'Désolé, je n\'ai pas pu traiter votre demande.';
-        // Si n8n retourne 'question', on vérifie le client comme filet de sécurité
+        // Si n8n retourne 'question', on utilise le type détecté côté client comme filet de sécurité
         const nType = data.type;
-        const clientType = detectType(message);
         const inputType = (nType && nType !== 'question') ? nType : clientType;
 
         addAiMessage(aiResponse, inputType);
