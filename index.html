@@ -553,10 +553,22 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+      /* Sidebar cachée par défaut, glisse depuis la gauche */
       .sidebar { width: 0; min-width: 0; padding: 0; overflow: hidden; transition: width 0.25s; }
-      .sidebar.open { width: 280px; min-width: 280px; padding: 20px 16px; position: fixed; z-index: 100; height: 100%; top: 0; left: 0; }
+      .sidebar.open {
+        width: 280px; min-width: 280px; padding: 20px 16px;
+        position: fixed; z-index: 100; height: 100%; top: 0; left: 0;
+        overflow-y: auto; /* scrollable quand ouverte */
+      }
       .message { max-width: 95%; }
       .hamburger-btn { display: flex; align-items: center; }
+
+      /* Input area : évite que le clavier virtuel masque la zone de saisie */
+      .input-area { padding: 10px 12px; padding-bottom: env(safe-area-inset-bottom, 10px); }
+
+      /* Utiliser dvh (dynamic viewport height) si supporté pour exclure le chrome du navigateur */
+      body { height: 100dvh; }
+      html { height: 100dvh; }
     }
   </style>
 </head>
