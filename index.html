@@ -29,8 +29,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { height: 100%; }
-    body { height: 100%; overflow: hidden; }
+    html, body { height: 100%; overflow: hidden; }
 
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -38,7 +37,6 @@
       color: var(--text-primary);
       display: flex;
       height: 100vh;
-      height: 100dvh;
     }
 
     /* === SIDEBAR === */
@@ -53,6 +51,9 @@
       gap: 20px;
       overflow-y: auto;
     }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .logo {
       display: flex;
@@ -301,11 +302,104 @@
     }
     .analysis-header:hover { background: rgba(255,255,255,0.03); }
     .analysis-header.faits { border-left: 3px solid #58a6ff; color: #58a6ff; }
+    .analysis-header.questions { border-left: 3px solid #a371f7; color: #a371f7; }
     .analysis-header.problemes { border-left: 3px solid #f0883e; color: #f0883e; }
     .analysis-header.textes { border-left: 3px solid var(--gold); color: var(--gold); }
     .analysis-header.analyse { border-left: 3px solid #3fb950; color: #3fb950; }
-    .analysis-header.orientations { border-left: 3px solid #a371f7; color: #a371f7; }
+    .analysis-header.elements { border-left: 3px solid #20b2aa; color: #20b2aa; }
+    .analysis-header.orientations { border-left: 3px solid #e0c068; color: #e0c068; }
     .analysis-header.garde { border-left: 3px solid var(--error); color: var(--error); background: rgba(248,81,73,0.05); }
+
+    /* === MODE BADGE - Stratégie & Simulateur === */
+    .mode-badge.strategie { color: #ff6b6b; border-color: #e63946; background: rgba(230,57,70,0.1); }
+    .mode-badge.simulateur { color: #c77dff; border-color: #7b2d8b; background: rgba(123,45,139,0.1); }
+
+    /* === STRATÉGIE - Layout 2 colonnes === */
+    .strategie-container { display: flex; flex-direction: column; gap: 12px; }
+    .strategie-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 700px) { .strategie-columns { grid-template-columns: 1fr; } }
+    .strategie-section {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .strategie-header {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .strategie-header:hover { background: rgba(255,255,255,0.03); }
+    .strategie-header.adverse { border-left: 3px solid #e63946; color: #ff6b6b; }
+    .strategie-header.defense { border-left: 3px solid #3fb950; color: #3fb950; }
+    .strategie-header.bilan { border-left: 3px solid var(--gold); color: var(--gold); }
+    .strategie-header.etapes { border-left: 3px solid #58a6ff; color: #58a6ff; }
+    .strategie-body {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+    }
+
+    /* === SIMULATEUR - Style dossier judiciaire === */
+    .simulateur-container { display: flex; flex-direction: column; gap: 12px; }
+    .simulateur-header-banner {
+      background: linear-gradient(135deg, rgba(123,45,139,0.15), rgba(123,45,139,0.05));
+      border: 1px solid rgba(123,45,139,0.4);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 11px;
+      color: #c77dff;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .simulateur-warning {
+      background: rgba(248,81,73,0.06);
+      border: 1px solid rgba(248,81,73,0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .simulateur-section {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .simulateur-sec-header {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .simulateur-sec-header:hover { background: rgba(255,255,255,0.03); }
+    .simulateur-sec-header.identification { border-left: 3px solid #c77dff; color: #c77dff; }
+    .simulateur-sec-header.accusation { border-left: 3px solid #e63946; color: #ff6b6b; }
+    .simulateur-sec-header.defense { border-left: 3px solid #3fb950; color: #3fb950; }
+    .simulateur-sec-header.juge { border-left: 3px solid var(--gold); color: var(--gold); }
+    .simulateur-sec-header.verdict { border-left: 3px solid #58a6ff; color: #58a6ff; }
+    .simulateur-sec-body {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+    }
     .analysis-body {
       padding: 12px 14px;
       font-size: 13px;
@@ -415,71 +509,6 @@
     }
     @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    /* === DRAPEAU SÉNÉGAL FLOTTANT === */
-    .senegal-flag {
-      position: fixed;
-      bottom: 95px;
-      right: 16px;
-      z-index: 500;
-      pointer-events: none;
-    }
-    .flag-container {
-      display: flex;
-      align-items: flex-start;
-      filter: drop-shadow(0 3px 8px rgba(0,0,0,0.6));
-    }
-    /* Mat vertical */
-    .flag-pole {
-      width: 3px;
-      height: 68px;
-      background: linear-gradient(to right, #d4d4d4, #888);
-      border-radius: 2px 2px 3px 3px;
-      flex-shrink: 0;
-    }
-    /* Corps du drapeau - accroché en haut du mat */
-    .flag-body {
-      width: 54px;
-      height: 34px;
-      display: flex;
-      margin-top: 5px;
-      border-radius: 0 3px 3px 0;
-      overflow: hidden;
-      transform-origin: left center;
-      animation: flagWave 2.6s ease-in-out infinite;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.35);
-    }
-    .flag-stripe { flex: 1; height: 100%; }
-    .flag-stripe.green  { background: #00853F; }
-    .flag-stripe.yellow { background: #FDEF42; position: relative; }
-    .flag-stripe.red    { background: #E31B23; }
-    /* Étoile verte centrée sur la bande jaune */
-    .flag-star {
-      position: absolute;
-      font-size: 12px;
-      color: #00853F;
-      line-height: 1;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    /* Animation vague réaliste */
-    @keyframes flagWave {
-      0%   { transform: perspective(200px) rotateY(0deg) skewY(0deg); }
-      25%  { transform: perspective(200px) rotateY(3deg) skewY(1.5deg); }
-      50%  { transform: perspective(200px) rotateY(-2deg) skewY(-1deg); }
-      75%  { transform: perspective(200px) rotateY(3.5deg) skewY(1deg); }
-      100% { transform: perspective(200px) rotateY(0deg) skewY(0deg); }
-    }
-    /* Mobile : déplace en bas à droite au-dessus du bouton send */
-    @media (max-width: 768px) {
-      .senegal-flag { bottom: 80px; right: 10px; }
-      .flag-body { width: 44px; height: 28px; }
-      .flag-pole { height: 56px; }
-    }
-    @media (max-width: 400px) {
-      .senegal-flag { display: none; }
-    }
-
     /* Notification */
     .notification {
       position: fixed;
@@ -497,120 +526,18 @@
     .notification.info { background: #1a2a3d; border: 1px solid var(--blue); color: #80c0ff; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* Hamburger button */
-    .hamburger {
-      display: none;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 20px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-    .hamburger:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
-
-    /* Sidebar overlay (mobile) */
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 99;
-    }
-    .sidebar-overlay.visible { display: block; }
-
-    /* Sidebar close button (mobile) */
-    .sidebar-close {
-      display: none;
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 20px;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 6px;
-    }
-    .sidebar-close:hover { color: var(--text-primary); }
-
     /* Responsive */
     @media (max-width: 768px) {
-      /* Show hamburger */
-      .hamburger { display: flex; align-items: center; justify-content: center; }
-      .sidebar-close { display: block; }
-
-      /* Sidebar: hidden by default, slides in */
-      .sidebar {
-        width: 0;
-        min-width: 0;
-        padding: 0;
-        overflow: hidden;
-        position: fixed;
-        z-index: 100;
-        height: 100%;
-        height: 100dvh;
-        top: 0;
-        left: 0;
-        transition: width 0.25s ease, padding 0.25s ease;
-      }
-      .sidebar.open {
-        width: 280px;
-        min-width: 280px;
-        padding: 20px 16px;
-        overflow-y: auto;
-      }
-
-      /* Header */
-      .header { padding: 12px 14px; }
-      .header-left { gap: 8px; }
-
-      /* Compact title on mobile */
-      .header-title-text { font-size: 12px !important; }
-      .header-title-sub { display: none; }
-
-      /* Chat area */
-      .chat-area { padding: 12px; gap: 12px; }
-
-      /* Messages */
-      .message { max-width: 100%; }
-      .avatar { width: 30px; height: 30px; font-size: 14px; }
-      .bubble { padding: 10px 14px; font-size: 13px; }
-
-      /* Welcome */
-      .welcome { padding: 20px 8px; }
-      .welcome-icon { font-size: 40px; }
-      .welcome h2 { font-size: 18px; }
-      .welcome p { font-size: 13px; }
-      .example-chip { font-size: 11px; padding: 8px 12px; }
-
-      /* Input area – clé pour la visibilité mobile */
-      .input-area { padding: 10px 12px; }
-      .input-row { padding: 8px 10px; gap: 8px; }
-      #messageInput { font-size: 16px; /* 16px évite le zoom auto sur iOS */ }
-      .input-disclaimer { font-size: 9px; margin-bottom: 6px; }
-
-      /* Notification */
-      .notification { right: 10px; left: 10px; max-width: none; }
-    }
-
-    @media (max-width: 400px) {
-      .mode-badge { display: none; }
+      .sidebar { width: 0; min-width: 0; padding: 0; overflow: hidden; }
+      .sidebar.open { width: 280px; min-width: 280px; padding: 20px 16px; position: fixed; z-index: 100; height: 100%; top: 0; left: 0; }
+      .message { max-width: 95%; }
     }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR OVERLAY (mobile) -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
   <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar" style="position:relative;">
-    <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  <aside class="sidebar" id="sidebar">
     <div class="logo">
       <div class="logo-icon">⚖️</div>
       <div class="logo-text">
@@ -633,7 +560,17 @@
       <div class="mode-card" id="card-consultation">
         <div class="mode-icon">🟡</div>
         <h4>Consultation Juridique</h4>
-        <p>Exposez votre situation et recevez une analyse juridique structurée en 6 parties.</p>
+        <p>Exposez votre situation et recevez une analyse en 8 parties : faits, questions, textes, stratégie, preuves à réunir…</p>
+      </div>
+      <div class="mode-card" id="card-strategie">
+        <div class="mode-icon">⚔️</div>
+        <h4>Stratégie Juridique</h4>
+        <p>Obtenez une stratégie de défense : arguments adverses, angles de défense, forces et faiblesses du dossier.</p>
+      </div>
+      <div class="mode-card" id="card-simulateur">
+        <div class="mode-icon">🎭</div>
+        <h4>Simulateur de Procès</h4>
+        <p>Simulez le déroulement d'une affaire : plaidoiries, questions du juge, verdict probable.</p>
       </div>
     </div>
 
@@ -642,15 +579,16 @@
       <ul class="codes-list">
         <li>Code Pénal</li>
         <li>Code de Procédure Pénale</li>
+        <li>Code Civil</li>
         <li>Code de Procédure Civile</li>
-        <li>Code des Obligations Civiles &amp; Commerciales</li>
         <li>Code du Travail</li>
         <li>Code de la Famille</li>
-        <li>Code de l'Environnement</li>
+        <li>COCC</li>
         <li>Code Minier 2016</li>
+        <li>Code de l'Environnement</li>
         <li>Code Général des Impôts</li>
-        <li>Code des Marchés Publics 2022</li>
-        <li>Constitution du Sénégal</li>
+        <li>Code des Douanes</li>
+        <li>Constitution 2001</li>
       </ul>
     </div>
 
@@ -674,15 +612,14 @@
   <main class="main">
     <header class="header">
       <div class="header-left">
-        <button class="hamburger" onclick="openSidebar()" title="Menu">☰</button>
         <div class="header-status">
           <div class="status-dot" id="statusDot"></div>
           <span id="statusText">Prêt</span>
         </div>
       </div>
       <div style="text-align:center; flex:1;">
-        <span class="header-title-text" style="font-size:13px; font-weight:600; color:var(--gold-light);">⚖️ Maître Sall – Conseiller Juridique AI</span>
-        <br><span class="header-title-sub" style="font-size:11px; color:var(--text-muted);">Droit Sénégalais · 11 Codes Légaux</span>
+        <span style="font-size:13px; font-weight:600; color:var(--gold-light);">⚖️ Maître Sall – Conseiller Juridique AI</span>
+        <br><span style="font-size:11px; color:var(--text-muted);">Droit Sénégalais · 12 Codes Légaux</span>
       </div>
       <div class="mode-badge question" id="modeBadge">Question</div>
     </header>
@@ -711,6 +648,14 @@
           <div class="example-chip" onclick="sendExample(this.dataset.q)" data-q="Quels sont les articles applicables au divorce par consentement mutuel dans le Code de la Famille sénégalais ?">
             <strong>🔵 Question Juridique</strong>
             Quels sont les articles applicables au divorce par consentement mutuel ?
+          </div>
+          <div class="example-chip" onclick="sendExample(this.dataset.q)" data-q="Mon employeur m'a licencié abusivement et refuse de me payer mes indemnités. Quelle stratégie de défense adopter si je porte l'affaire devant le tribunal du travail ?">
+            <strong>⚔️ Stratégie Juridique</strong>
+            Mon employeur m'a licencié abusivement. Quelle stratégie de défense adopter ?
+          </div>
+          <div class="example-chip" onclick="sendExample(this.dataset.q)" data-q="Simule le déroulement d'un procès pour licenciement abusif au Sénégal : un employé réclame ses indemnités à son employeur qui refuse de les payer après 5 ans de service.">
+            <strong>🎭 Simulateur de Procès</strong>
+            Simule un procès pour licenciement abusif au Sénégal.
           </div>
         </div>
       </div>
@@ -776,18 +721,6 @@
       return url || DEFAULT_WEBHOOK;
     }
 
-    // ========== SIDEBAR MOBILE ==========
-    function openSidebar() {
-      document.getElementById('sidebar').classList.add('open');
-      document.getElementById('sidebarOverlay').classList.add('visible');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeSidebar() {
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('sidebarOverlay').classList.remove('visible');
-      document.body.style.overflow = '';
-    }
-
     // ========== VOICE TOGGLE ==========
     function toggleVoice() {
       voiceOutputEnabled = !voiceOutputEnabled;
@@ -845,74 +778,40 @@
     }
 
     // ========== SPEECH SYNTHESIS ==========
-    // Découpe un texte en segments courts à la frontière des phrases
-    function splitIntoChunks(text, maxLen) {
-      const chunks = [];
-      const lines = text.split(/\n+/).map(l => l.trim()).filter(l => l.length > 0);
-      for (const line of lines) {
-        if (line.length <= maxLen) { chunks.push(line); continue; }
-        const sentences = line.split(/(?<=[.!?;,])\s+/);
-        let buffer = '';
-        for (const s of sentences) {
-          const candidate = buffer ? buffer + ' ' + s : s;
-          if (candidate.length <= maxLen) {
-            buffer = candidate;
-          } else {
-            if (buffer) chunks.push(buffer);
-            buffer = s.length <= maxLen ? s : s.slice(0, maxLen);
-          }
-        }
-        if (buffer) chunks.push(buffer);
-      }
-      return chunks.filter(c => c.trim().length > 0);
-    }
-
     function speakText(text) {
       if (!voiceOutputEnabled) return;
       window.speechSynthesis.cancel();
 
-      // Nettoie le texte (markdown, emojis, balises contexte)
+      // Clean text for TTS (remove markdown, section headers, emojis)
       let cleanText = text
-        .replace(/^#{1,3}\s+[^\n]+/gm, '')
-        .replace(/\*\*([^*]+)\*\*/g, '$1')
-        .replace(/\*([^*]+)\*/g, '$1')
-        .replace(/[\u{1F300}-\u{1FFFF}]/gu, '')
-        .replace(/===.*?===/gs, '')
-        .replace(/\[Source:[^\]]+\]/g, '')
+        .replace(/^#{1,3}\s+[^\n]+/gm, '') // Remove headers
+        .replace(/\*\*([^*]+)\*\*/g, '$1')  // Bold
+        .replace(/\*([^*]+)\*/g, '$1')       // Italic
+        .replace(/[\u{1F300}-\u{1FFFF}]/gu, '') // Emojis
+        .replace(/===.*?===/gs, '')           // Context markers
+        .replace(/\[Source:[^\]]+\]/g, '')    // Source refs
         .replace(/\n{3,}/g, '\n\n')
-        .trim();
+        .trim()
+        .slice(0, 1500); // Limit TTS length
 
-      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'fr-FR';
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
 
-      // Récupère la voix française une seule fois
+      // Try to find a French voice
       const voices = window.speechSynthesis.getVoices();
       const frVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes('Google'))
         || voices.find(v => v.lang.startsWith('fr'));
+      if (frVoice) utterance.voice = frVoice;
 
-      // Découpe en chunks de 250 chars max pour éviter la coupure navigateur
-      const chunks = splitIntoChunks(cleanText, 250);
-      let chunkIndex = 0;
-
-      function speakNext() {
-        if (chunkIndex >= chunks.length) { currentSpeech = null; return; }
-        const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex++]);
-        utterance.lang = 'fr-FR';
-        utterance.rate = 0.95;
-        utterance.pitch = 1;
-        if (frVoice) utterance.voice = frVoice;
-        utterance.onend = speakNext;
-        utterance.onerror = speakNext; // passe au suivant en cas d'erreur
-        currentSpeech = utterance;
-        window.speechSynthesis.speak(utterance);
-      }
-
-      speakNext();
+      currentSpeech = utterance;
+      window.speechSynthesis.speak(utterance);
     }
 
     // ========== CHAT LOGIC ==========
     async function sendMessage() {
       if (isLoading) return;
-      closeSidebar(); // ferme la sidebar sur mobile si ouverte
       const input = document.getElementById('messageInput');
       const message = input.value.trim();
       if (!message) return;
@@ -988,7 +887,6 @@
       div.className = 'message ai';
 
       if (type === 'consultation') {
-        // Parse structured sections
         div.innerHTML = `
           <div class="avatar ai-avatar">⚖️</div>
           <div class="bubble consultation-bubble" style="padding:16px; min-width:320px;">
@@ -996,6 +894,24 @@
               🟡 CONSULTATION JURIDIQUE
             </div>
             ${renderConsultation(text)}
+          </div>`;
+      } else if (type === 'strategie') {
+        div.innerHTML = `
+          <div class="avatar ai-avatar">⚖️</div>
+          <div class="bubble" style="padding:16px; min-width:320px; border-color:rgba(230,57,70,0.2); background:rgba(230,57,70,0.03);">
+            <div style="font-size:11px; color:#ff6b6b; margin-bottom:12px; font-weight:600;">
+              ⚔️ STRATÉGIE JURIDIQUE
+            </div>
+            ${renderStrategie(text)}
+          </div>`;
+      } else if (type === 'simulateur') {
+        div.innerHTML = `
+          <div class="avatar ai-avatar">⚖️</div>
+          <div class="bubble" style="padding:16px; min-width:320px; border-color:rgba(123,45,139,0.3); background:rgba(123,45,139,0.03);">
+            <div style="font-size:11px; color:#c77dff; margin-bottom:12px; font-weight:600;">
+              🎭 SIMULATEUR DE PROCÈS
+            </div>
+            ${renderSimulateur(text)}
           </div>`;
       } else {
         div.innerHTML = `
@@ -1014,22 +930,23 @@
 
     function renderConsultation(text) {
       const sections = [
-        { key: '🔍', label: 'Analyse des Faits', cls: 'faits', patterns: ['ANALYSE DES FAITS', 'analyse des faits', 'FAITS'] },
-        { key: '⚖️', label: 'Problèmes Juridiques', cls: 'problemes', patterns: ['PROBL', 'problèmes', 'JURIDIQUES SOUL'] },
-        { key: '📚', label: 'Textes Applicables', cls: 'textes', patterns: ['TEXTES APPLICABLES', 'textes applicables', 'TEXTES'] },
-        { key: '💡', label: 'Analyse Juridique', cls: 'analyse', patterns: ['ANALYSE JURIDIQUE', 'analyse juridique', 'INTERPRÉTATION'] },
-        { key: '🎯', label: 'Orientations & Recommandations', cls: 'orientations', patterns: ['ORIENTATIONS', 'orientations', 'RECOMMANDATIONS'] },
-        { key: '⚠️', label: 'Mise en Garde', cls: 'garde', patterns: ['MISE EN GARDE', 'mise en garde', 'AVERTISSEMENT'] }
+        { key: '🔍', label: 'Analyse des Faits', cls: 'faits', patterns: ['ANALYSE DES FAITS', 'FAITS'] },
+        { key: '🔑', label: 'Questions Juridiques Centrales', cls: 'questions', patterns: ['QUESTIONS JURIDIQUES CENTRALES', 'QUESTIONS JURIDIQUES', 'QUESTIONS CENTRALES'] },
+        { key: '⚖️', label: 'Problèmes Juridiques', cls: 'problemes', patterns: ['PROBLÈMES JURIDIQUES', 'PROBL'] },
+        { key: '📚', label: 'Textes Applicables', cls: 'textes', patterns: ['TEXTES APPLICABLES', 'TEXTES'] },
+        { key: '💡', label: 'Analyse Juridique', cls: 'analyse', patterns: ['ANALYSE JURIDIQUE', 'INTERPRÉTATION'] },
+        { key: '📋', label: 'Éléments à Réunir', cls: 'elements', patterns: ['ÉLÉMENTS À RÉUNIR', 'ELEMENTS A REUNIR', 'PREUVES', 'DOCUMENTS À RASSEMBLER'] },
+        { key: '🎯', label: 'Orientations & Recommandations', cls: 'orientations', patterns: ['ORIENTATIONS', 'RECOMMANDATIONS'] },
+        { key: '⚠️', label: 'Mise en Garde', cls: 'garde', patterns: ['MISE EN GARDE', 'AVERTISSEMENT'] }
       ];
 
-      // Try to split by sections
       let html = '<div class="analysis-container">';
       const remaining = splitIntoSections(text, sections);
 
       if (remaining.parsed) {
-        for (const [sKey, content] of Object.entries(remaining.sections)) {
-          const sec = sections.find(s => s.cls === sKey);
-          if (!sec || !content.trim()) continue;
+        for (const sec of sections) {
+          const content = remaining.sections[sec.cls];
+          if (!content || !content.trim()) continue;
           html += `
             <div class="analysis-section">
               <div class="analysis-header ${sec.cls}" onclick="toggleSection(this)">
@@ -1040,7 +957,6 @@
             </div>`;
         }
       } else {
-        // Fallback: render as markdown
         html += `<div class="bubble-text">${parseMarkdown(text)}</div>`;
       }
 
@@ -1049,25 +965,28 @@
     }
 
     function splitIntoSections(text, sections) {
-      // Build a pattern to split on ## headers or emoji headers
-      const headerPattern = /^(?:#{1,3}\s+)?(?:[🔍⚖️📚💡🎯⚠️]\s+)?(?:ANALYSE DES FAITS|PROBLÈMES JURIDIQUES|TEXTES APPLICABLES|ANALYSE JURIDIQUE|ORIENTATIONS|MISE EN GARDE|PROBL[ÈE]MES|RECOMMANDATIONS)/im;
+      const allPatterns = sections.flatMap(s => s.patterns).join('|');
+      const headerPattern = new RegExp(
+        `^(?:#{1,3}\\s+)?(?:[🔍🔑⚖️📚💡📋🎯⚠️⚔️🎭🔎📂]\\s+)?(?:${allPatterns})`,
+        'im'
+      );
 
       if (!headerPattern.test(text)) {
         return { parsed: false, sections: {} };
       }
 
-      const result = { parsed: true, sections: { faits: '', problemes: '', textes: '', analyse: '', orientations: '', garde: '' } };
+      const result = { parsed: true, sections: {} };
+      sections.forEach(s => { result.sections[s.cls] = ''; });
 
       const lines = text.split('\n');
       let currentSection = null;
 
       for (const line of lines) {
-        const lineTrimmed = line.trim().toLowerCase();
-        const lineUpper = line.toUpperCase();
-
+        const lineUpper = line.toUpperCase().trim();
         let matched = false;
         for (const sec of sections) {
-          if (sec.patterns.some(p => lineUpper.includes(p.toUpperCase()) && line.match(/^#{1,3}|^[🔍⚖️📚💡🎯⚠️]/))) {
+          const isHeader = /^#{1,3}\s|^[🔍🔑⚖️📚💡📋🎯⚠️⚔️🎭🔎📂]/.test(line.trim()) || /^[A-ZÀÉÈÊÏÎ\s]{4,}/.test(lineUpper);
+          if (isHeader && sec.patterns.some(p => lineUpper.includes(p.toUpperCase()))) {
             currentSection = sec.cls;
             matched = true;
             break;
@@ -1078,11 +997,116 @@
         }
       }
 
-      // Check if we parsed anything
       const hasContent = Object.values(result.sections).some(v => v.trim().length > 0);
       if (!hasContent) return { parsed: false, sections: {} };
 
       return result;
+    }
+
+    // === AXE 2 : STRATÉGIE JURIDIQUE ===
+    function renderStrategie(text) {
+      const sections = [
+        { key: '🔴', label: 'Position de la Partie Adverse', cls: 'adverse', patterns: ['POSITION DE LA PARTIE ADVERSE', 'PARTIE ADVERSE', 'ARGUMENTS ADVERSES', 'ADVERSAIRE'] },
+        { key: '🟢', label: 'Stratégie de Défense Recommandée', cls: 'defense', patterns: ['STRATÉGIE DE DÉFENSE', 'DEFENSE RECOMMANDÉE', 'DEFENSE', 'VOS ARGUMENTS'] },
+        { key: '⚖️', label: 'Forces & Faiblesses du Dossier', cls: 'bilan', patterns: ['FORCES', 'FAIBLESSES', 'BILAN', 'ANALYSE DU DOSSIER'] },
+        { key: '🔵', label: 'Prochaines Étapes Concrètes', cls: 'etapes', patterns: ['PROCHAINES ÉTAPES', 'ETAPES CONCRETES', 'ACTIONS', 'À FAIRE'] }
+      ];
+
+      const parsed = splitIntoSections(text, sections);
+      let html = '<div class="strategie-container">';
+
+      if (parsed.parsed) {
+        // Adverse vs Defense côte à côte
+        const adverseContent = parsed.sections['adverse'];
+        const defenseContent = parsed.sections['defense'];
+        if (adverseContent || defenseContent) {
+          html += '<div class="strategie-columns">';
+          if (adverseContent) html += `
+            <div class="strategie-section">
+              <div class="strategie-header adverse" onclick="toggleGenericSection(this)">
+                🔴 Position Adverse <span class="analysis-toggle">▼</span>
+              </div>
+              <div class="strategie-body">${parseMarkdown(adverseContent.trim())}</div>
+            </div>`;
+          if (defenseContent) html += `
+            <div class="strategie-section">
+              <div class="strategie-header defense" onclick="toggleGenericSection(this)">
+                🟢 Votre Défense <span class="analysis-toggle">▼</span>
+              </div>
+              <div class="strategie-body">${parseMarkdown(defenseContent.trim())}</div>
+            </div>`;
+          html += '</div>';
+        }
+        // Bilan et étapes en pleine largeur
+        ['bilan', 'etapes'].forEach(cls => {
+          const sec = sections.find(s => s.cls === cls);
+          const content = parsed.sections[cls];
+          if (!content || !content.trim()) return;
+          html += `
+            <div class="strategie-section">
+              <div class="strategie-header ${cls}" onclick="toggleGenericSection(this)">
+                ${sec.key} ${sec.label} <span class="analysis-toggle">▼</span>
+              </div>
+              <div class="strategie-body">${parseMarkdown(content.trim())}</div>
+            </div>`;
+        });
+      } else {
+        html += `<div class="bubble-text">${parseMarkdown(text)}</div>`;
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    // === AXE 3 : SIMULATEUR DE PROCÈS ===
+    function renderSimulateur(text) {
+      const sections = [
+        { key: '📂', label: 'Identification du Dossier', cls: 'identification', patterns: ['IDENTIFICATION DU DOSSIER', 'IDENTIFICATION', 'DOSSIER', 'QUALIFICATION'] },
+        { key: '⚔️', label: 'Arguments de l\'Accusation / Plaignant', cls: 'accusation', patterns: ['ARGUMENTS DE L\'ACCUSATION', 'ACCUSATION', 'PLAIGNANT', 'POURSUITES'] },
+        { key: '🛡️', label: 'Arguments de la Défense', cls: 'defense', patterns: ['ARGUMENTS DE LA DÉFENSE', 'DÉFENSE', 'CONTRE-ARGUMENTS'] },
+        { key: '⚖️', label: 'Questions Probables du Juge', cls: 'juge', patterns: ['QUESTIONS PROBABLES DU JUGE', 'JUGE', 'TRIBUNAL', 'INTERROGATIONS'] },
+        { key: '📋', label: 'Verdict Probable & Alternatives', cls: 'verdict', patterns: ['VERDICT PROBABLE', 'VERDICT', 'ALTERNATIVES', 'ISSUE PROBABLE'] }
+      ];
+
+      const now = new Date();
+      const dossierNum = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+      const parsed = splitIntoSections(text, sections);
+
+      let html = `
+        <div class="simulateur-container">
+          <div class="simulateur-header-banner">SIMULATION PÉDAGOGIQUE · DOSSIER N° ${dossierNum} · DROIT SÉNÉGALAIS</div>
+          <div class="simulateur-warning">⚠️ Cette simulation est pédagogique et ne constitue pas un avis juridique. Les arguments présentés sont illustratifs.</div>`;
+
+      if (parsed.parsed) {
+        for (const sec of sections) {
+          const content = parsed.sections[sec.cls];
+          if (!content || !content.trim()) continue;
+          html += `
+            <div class="simulateur-section">
+              <div class="simulateur-sec-header ${sec.cls}" onclick="toggleGenericSection(this)">
+                ${sec.key} ${sec.label} <span class="analysis-toggle">▼</span>
+              </div>
+              <div class="simulateur-sec-body">${parseMarkdown(content.trim())}</div>
+            </div>`;
+        }
+      } else {
+        html += `<div class="bubble-text">${parseMarkdown(text)}</div>`;
+      }
+
+      html += '</div>';
+      return html;
+    }
+
+    function toggleGenericSection(header) {
+      const body = header.nextElementSibling;
+      const toggle = header.querySelector('.analysis-toggle');
+      if (body.style.display === 'none') {
+        body.style.display = 'block';
+        toggle.textContent = '▼';
+      } else {
+        body.style.display = 'none';
+        toggle.textContent = '▶';
+      }
     }
 
     function toggleSection(header) {
@@ -1135,19 +1159,19 @@
 
     function updateModeBadge(type) {
       const badge = document.getElementById('modeBadge');
-      const cardQ = document.getElementById('card-question');
-      const cardC = document.getElementById('card-consultation');
-      if (type === 'consultation') {
-        badge.className = 'mode-badge consultation';
-        badge.textContent = 'Consultation';
-        cardC.classList.add('active');
-        cardQ.classList.remove('active');
-      } else {
-        badge.className = 'mode-badge question';
-        badge.textContent = 'Question';
-        cardQ.classList.add('active');
-        cardC.classList.remove('active');
-      }
+      const cards = {
+        question: document.getElementById('card-question'),
+        consultation: document.getElementById('card-consultation'),
+        strategie: document.getElementById('card-strategie'),
+        simulateur: document.getElementById('card-simulateur')
+      };
+      // Remove active from all
+      Object.values(cards).forEach(c => c && c.classList.remove('active'));
+
+      const labels = { question: 'Question', consultation: 'Consultation', strategie: 'Stratégie', simulateur: 'Simulateur' };
+      badge.className = `mode-badge ${type}`;
+      badge.textContent = labels[type] || 'Question';
+      if (cards[type]) cards[type].classList.add('active');
     }
 
     function newConversation() {
@@ -1180,6 +1204,7 @@
 
       updateModeBadge('question');
       if (currentSpeech) window.speechSynthesis.cancel();
+
     }
 
     // ========== UTILS ==========
@@ -1201,9 +1226,20 @@
     }
 
     function detectType(message) {
-      const factual = /(j'ai |on m'a |mon |ma |j'étais|j'ai été|mon employeur|ma femme|mon mari)/i;
-      return factual.test(message) && message.length > 80 && !message.trim().endsWith('?')
-        ? 'consultation' : 'question';
+      const msg = message.trim();
+      // Simulateur : mots-clés explicites de simulation
+      const simKeywords = /(simule[rz]?|simulateur|joue le r[oô]le|fais comme si|proc[eè]s simul[eé]|moot court|plaidoirie|que se passerait.il|comment se d[eé]roulerait|si j'allais en justice|si je porte plainte)/i;
+      if (simKeywords.test(msg)) return 'simulateur';
+
+      // Stratégie : demande de stratégie ou conseils tactiques
+      const stratKeywords = /(strat[eé]gie|comment me d[eé]fendre|comment plaider|mes arguments|quel recours|faire appel|proc[eè]s|tribunal|d[eé]fense juridique|comment attaquer|citation|assignation|plainte contre|r[eé]futer|contre-argument)/i;
+      if (stratKeywords.test(msg) && msg.length > 60) return 'strategie';
+
+      // Consultation : situation personnelle longue sans question directe
+      const factual = /(j'ai |on m'a |mon |ma |j'[eé]tais|j'ai [eé]t[eé]|mon employeur|ma femme|mon mari|mon propri[eé]taire|mon contrat|notre soci[eé]t[eé])/i;
+      if (factual.test(msg) && msg.length > 80 && !msg.endsWith('?')) return 'consultation';
+
+      return 'question';
     }
 
     function escapeHtml(text) {
@@ -1238,20 +1274,5 @@
       speechSynthesis.getVoices();
     }
   </script>
-
-  <!-- Drapeau du Sénégal flottant -->
-  <div class="senegal-flag" title="Sénégal">
-    <div class="flag-container">
-      <div class="flag-pole"></div>
-      <div class="flag-body">
-        <div class="flag-stripe green"></div>
-        <div class="flag-stripe yellow">
-          <span class="flag-star">★</span>
-        </div>
-        <div class="flag-stripe red"></div>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
