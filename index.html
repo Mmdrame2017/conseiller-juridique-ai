@@ -454,6 +454,34 @@
       text-align: center;
       margin-bottom: 10px;
     }
+
+    /* Indicateur de mode forcé */
+    #modeIndicator {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 5px 10px;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 20px;
+      width: fit-content;
+      font-size: 11px;
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+    #modeIndicator.visible { display: flex; }
+    #modeIndicator button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      line-height: 1;
+    }
+    #modeIndicator button:hover { color: var(--error); }
+
     .input-row {
       display: flex;
       align-items: flex-end;
@@ -733,6 +761,10 @@
     <div class="input-area">
       <div class="input-disclaimer">
         ⚠️ Usage informatif uniquement – Consultez un avocat pour vos affaires juridiques
+      </div>
+      <div id="modeIndicator">
+        <span id="modeIndicatorLabel">🔒 Mode : Question</span>
+        <button onclick="setForcedMode(forcedMode)" title="Désactiver le mode forcé">✕</button>
       </div>
       <div class="input-row">
         <textarea id="messageInput" placeholder="Posez une question ou exposez votre situation juridique..." rows="1"
@@ -1255,19 +1287,42 @@
       }
     }
 
+    const modePlaceholders = {
+      question:     'Posez votre question juridique...',
+      consultation: 'Exposez votre situation en détail pour une analyse complète en 8 sections...',
+      strategie:    'Décrivez votre litige et dites quelle stratégie vous voulez adopter...',
+      simulateur:   'Décrivez l\'affaire à simuler (ex : "Simule le procès de...")...'
+    };
+    const modeLabels = {
+      question:     '🔵 Mode : Question',
+      consultation: '🟡 Mode : Consultation',
+      strategie:    '⚔️ Mode : Stratégie',
+      simulateur:   '🎭 Mode : Simulateur'
+    };
+
     function setForcedMode(type) {
       const allCards = ['question', 'consultation', 'strategie', 'simulateur'];
       allCards.forEach(t => {
         const c = document.getElementById('card-' + t);
         if (c) { c.classList.remove('forced', 'active'); }
       });
+      const indicator = document.getElementById('modeIndicator');
+      const indicatorLabel = document.getElementById('modeIndicatorLabel');
+      const textarea = document.getElementById('messageInput');
+
       if (forcedMode === type) {
         forcedMode = null;
+        if (indicator) indicator.classList.remove('visible');
+        if (textarea) textarea.placeholder = 'Posez une question ou exposez votre situation juridique...';
       } else {
         forcedMode = type;
         const card = document.getElementById('card-' + type);
         if (card) card.classList.add('forced');
         updateModeBadge(type);
+        if (indicator) indicator.classList.add('visible');
+        if (indicatorLabel) indicatorLabel.textContent = modeLabels[type] || type;
+        if (textarea) textarea.placeholder = modePlaceholders[type] || textarea.placeholder;
+        if (textarea) textarea.focus();
       }
       const sidebar = document.getElementById('sidebar');
       if (sidebar && sidebar.classList.contains('open')) toggleSidebar();
@@ -1298,6 +1353,10 @@
         const c = document.getElementById('card-' + t);
         if (c) c.classList.remove('forced', 'active');
       });
+      const indicator = document.getElementById('modeIndicator');
+      if (indicator) indicator.classList.remove('visible');
+      const textarea = document.getElementById('messageInput');
+      if (textarea) textarea.placeholder = 'Posez une question ou exposez votre situation juridique...';
       const chatArea = document.getElementById('chatArea');
 
       // Remove all messages
