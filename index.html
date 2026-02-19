@@ -541,6 +541,77 @@
     }
     @keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+    /* ===== AUDIO CONTROLS ===== */
+    /* Barre flottante Play/Pause/Stop */
+    .audio-bar {
+      position: fixed;
+      bottom: 90px;
+      right: 16px;
+      background: var(--bg-card);
+      border: 1px solid rgba(201,168,76,0.5);
+      border-radius: 30px;
+      padding: 8px 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      animation: slideInRight 0.3s ease;
+    }
+    .audio-bar.visible { display: flex; }
+    @keyframes slideInRight { from { transform: translateX(130%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .audio-bar-label { font-size: 11px; color: var(--gold-light); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+    .audio-bar-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 17px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      color: var(--text-primary);
+      transition: background 0.15s;
+      line-height: 1;
+    }
+    .audio-bar-btn:hover { background: rgba(255,255,255,0.1); }
+
+    /* Bouton "Écouter tout" dans les bulles */
+    .bubble-toolbar { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .bubble-speak-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+    }
+    .bubble-speak-btn:hover { border-color: var(--gold); color: var(--gold-light); background: var(--gold-dim); }
+
+    /* Bouton 🔊 par section (visible au survol) */
+    .section-speak-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: transparent;
+      margin-left: auto;
+      margin-right: 6px;
+      transition: color 0.15s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .analysis-header:hover .section-speak-btn,
+    .strategie-header:hover .section-speak-btn,
+    .simulateur-sec-header:hover .section-speak-btn { color: var(--text-muted); }
+    .section-speak-btn:hover { color: var(--gold-light) !important; }
+
     /* Notification */
     .notification {
       position: fixed;
@@ -779,6 +850,14 @@
     </div>
   </main>
 
+  <!-- Barre de contrôle audio flottante -->
+  <div class="audio-bar" id="audioBar">
+    <span>🔊</span>
+    <span class="audio-bar-label" id="audioBarLabel">Lecture...</span>
+    <button class="audio-bar-btn" id="pauseResumeBtn" onclick="pauseResumeSpeech()" title="Pause">⏸</button>
+    <button class="audio-bar-btn" onclick="stopSpeech()" title="Arrêter">⏹</button>
+  </div>
+
   <script>
     // ========== STATE ==========
     let isRecording = false;
@@ -880,9 +959,10 @@
     }
 
     // ========== SPEECH SYNTHESIS ==========
-    function speakText(text) {
+    function speakText(text, label) {
       if (!voiceOutputEnabled) return;
       window.speechSynthesis.cancel();
+      showAudioBar(label || 'Lecture en cours...');
 
       // Clean text for TTS (remove markdown, section headers, emojis)
       let cleanText = text
@@ -904,6 +984,7 @@
         const voices = window.speechSynthesis.getVoices();
         const frVoice = voices.find(v => v.lang.startsWith('fr') && !v.name.includes('Google')) || voices.find(v => v.lang.startsWith('fr'));
         if (frVoice) utterance.voice = frVoice;
+        utterance.onend = () => { hideAudioBar(); };
         currentSpeech = utterance;
         window.speechSynthesis.speak(utterance);
       } else {
@@ -928,6 +1009,7 @@
           utt.lang = 'fr-FR'; utt.rate = 0.95; utt.pitch = 1;
           if (frVoice) utt.voice = frVoice;
           if (i === 0) currentSpeech = utt;
+          if (i === chunks.length - 1) utt.onend = () => { hideAudioBar(); };
           window.speechSynthesis.speak(utt);
         });
       }
@@ -1011,6 +1093,9 @@
     }
 
     function addAiMessage(text, type) {
+      const responseId = 'resp-' + (++responseCounter);
+      responseTexts.set(responseId, text);
+      const listenBtn = `<div class="bubble-toolbar"><button class="bubble-speak-btn" onclick="speakStoredText('${responseId}')">🔊 Écouter tout</button></div>`;
       const div = document.createElement('div');
       div.className = 'message ai';
 
@@ -1018,36 +1103,32 @@
         div.innerHTML = `
           <div class="avatar ai-avatar">⚖️</div>
           <div class="bubble consultation-bubble" style="padding:16px; min-width:320px;">
-            <div style="font-size:11px; color:var(--gold); margin-bottom:12px; font-weight:600;">
-              🟡 CONSULTATION JURIDIQUE
-            </div>
+            <div style="font-size:11px; color:var(--gold); margin-bottom:6px; font-weight:600;">🟡 CONSULTATION JURIDIQUE</div>
+            ${listenBtn}
             ${renderConsultation(text)}
           </div>`;
       } else if (type === 'strategie') {
         div.innerHTML = `
           <div class="avatar ai-avatar">⚖️</div>
           <div class="bubble" style="padding:16px; min-width:320px; border-color:rgba(230,57,70,0.2); background:rgba(230,57,70,0.03);">
-            <div style="font-size:11px; color:#ff6b6b; margin-bottom:12px; font-weight:600;">
-              ⚔️ STRATÉGIE JURIDIQUE
-            </div>
+            <div style="font-size:11px; color:#ff6b6b; margin-bottom:6px; font-weight:600;">⚔️ STRATÉGIE JURIDIQUE</div>
+            ${listenBtn}
             ${renderStrategie(text)}
           </div>`;
       } else if (type === 'simulateur') {
         div.innerHTML = `
           <div class="avatar ai-avatar">⚖️</div>
           <div class="bubble" style="padding:16px; min-width:320px; border-color:rgba(123,45,139,0.3); background:rgba(123,45,139,0.03);">
-            <div style="font-size:11px; color:#c77dff; margin-bottom:12px; font-weight:600;">
-              🎭 SIMULATEUR DE PROCÈS
-            </div>
+            <div style="font-size:11px; color:#c77dff; margin-bottom:6px; font-weight:600;">🎭 SIMULATEUR DE PROCÈS</div>
+            ${listenBtn}
             ${renderSimulateur(text)}
           </div>`;
       } else {
         div.innerHTML = `
           <div class="avatar ai-avatar">⚖️</div>
           <div class="bubble">
-            <div style="font-size:11px; color:#58a6ff; margin-bottom:8px; font-weight:600;">
-              🔵 RÉPONSE JURIDIQUE
-            </div>
+            <div style="font-size:11px; color:#58a6ff; margin-bottom:6px; font-weight:600;">🔵 RÉPONSE JURIDIQUE</div>
+            ${listenBtn}
             <div class="bubble-text">${parseMarkdown(text)}</div>
           </div>`;
       }
@@ -1079,6 +1160,7 @@
             <div class="analysis-section">
               <div class="analysis-header ${sec.cls}" onclick="toggleSection(this)">
                 ${sec.key} ${sec.label}
+                <button class="section-speak-btn" onclick="event.stopPropagation(); speakSection(this)" title="Écouter cette section">🔊</button>
                 <span class="analysis-toggle">▼</span>
               </div>
               <div class="analysis-body">${parseMarkdown(content.trim())}</div>
@@ -1154,14 +1236,18 @@
           if (adverseContent) html += `
             <div class="strategie-section">
               <div class="strategie-header adverse" onclick="toggleGenericSection(this)">
-                🔴 Position Adverse <span class="analysis-toggle">▼</span>
+                🔴 Position Adverse
+                <button class="section-speak-btn" onclick="event.stopPropagation(); speakSection(this)" title="Écouter">🔊</button>
+                <span class="analysis-toggle">▼</span>
               </div>
               <div class="strategie-body">${parseMarkdown(adverseContent.trim())}</div>
             </div>`;
           if (defenseContent) html += `
             <div class="strategie-section">
               <div class="strategie-header defense" onclick="toggleGenericSection(this)">
-                🟢 Votre Défense <span class="analysis-toggle">▼</span>
+                🟢 Votre Défense
+                <button class="section-speak-btn" onclick="event.stopPropagation(); speakSection(this)" title="Écouter">🔊</button>
+                <span class="analysis-toggle">▼</span>
               </div>
               <div class="strategie-body">${parseMarkdown(defenseContent.trim())}</div>
             </div>`;
@@ -1175,7 +1261,9 @@
           html += `
             <div class="strategie-section">
               <div class="strategie-header ${cls}" onclick="toggleGenericSection(this)">
-                ${sec.key} ${sec.label} <span class="analysis-toggle">▼</span>
+                ${sec.key} ${sec.label}
+                <button class="section-speak-btn" onclick="event.stopPropagation(); speakSection(this)" title="Écouter">🔊</button>
+                <span class="analysis-toggle">▼</span>
               </div>
               <div class="strategie-body">${parseMarkdown(content.trim())}</div>
             </div>`;
@@ -1214,7 +1302,9 @@
           html += `
             <div class="simulateur-section">
               <div class="simulateur-sec-header ${sec.cls}" onclick="toggleGenericSection(this)">
-                ${sec.key} ${sec.label} <span class="analysis-toggle">▼</span>
+                ${sec.key} ${sec.label}
+                <button class="section-speak-btn" onclick="event.stopPropagation(); speakSection(this)" title="Écouter">🔊</button>
+                <span class="analysis-toggle">▼</span>
               </div>
               <div class="simulateur-sec-body">${parseMarkdown(content.trim())}</div>
             </div>`;
@@ -1468,6 +1558,54 @@
       const overlay = document.getElementById('sidebarOverlay');
       const isOpen = sidebar.classList.toggle('open');
       overlay.classList.toggle('visible', isOpen);
+    }
+
+    // ========== AUDIO BAR ==========
+    let isSpeechPaused = false;
+    let responseCounter = 0;
+    const responseTexts = new Map();
+
+    function showAudioBar(label) {
+      const bar = document.getElementById('audioBar');
+      const lbl = document.getElementById('audioBarLabel');
+      if (bar) bar.classList.add('visible');
+      if (lbl) lbl.textContent = label || 'Lecture...';
+      isSpeechPaused = false;
+      updatePauseBtn();
+    }
+    function hideAudioBar() {
+      const bar = document.getElementById('audioBar');
+      if (bar) bar.classList.remove('visible');
+      isSpeechPaused = false;
+      updatePauseBtn();
+    }
+    function updatePauseBtn() {
+      const btn = document.getElementById('pauseResumeBtn');
+      if (btn) btn.textContent = isSpeechPaused ? '▶' : '⏸';
+      if (btn) btn.title = isSpeechPaused ? 'Reprendre' : 'Pause';
+    }
+    function pauseResumeSpeech() {
+      if (!window.speechSynthesis.speaking) return;
+      if (isSpeechPaused) { window.speechSynthesis.resume(); isSpeechPaused = false; }
+      else { window.speechSynthesis.pause(); isSpeechPaused = true; }
+      updatePauseBtn();
+    }
+    function stopSpeech() {
+      window.speechSynthesis.cancel();
+      hideAudioBar();
+    }
+    function speakStoredText(id) {
+      const text = responseTexts.get(id);
+      if (text) speakText(text, 'Réponse complète');
+    }
+    function speakSection(btn) {
+      const section = btn.closest('.analysis-section, .strategie-section, .simulateur-section');
+      if (!section) return;
+      const body = section.querySelector('.analysis-body, .strategie-body, .simulateur-sec-body');
+      if (!body) return;
+      const header = section.querySelector('.analysis-header, .strategie-header, .simulateur-sec-header');
+      const label = header ? header.innerText.replace(/[▼▶🔊]/g, '').trim() : 'Section';
+      speakText(body.innerText, label);
     }
 
     // Load voices on ready
