@@ -832,7 +832,7 @@
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message, session_id: sessionId, history: history.slice(-6) })
+          body: JSON.stringify({ message, session_id: sessionId, history: history.slice(-6), type_hint: detectType(message) })
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
