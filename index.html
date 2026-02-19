@@ -830,13 +830,10 @@
 
       try {
         const webhookUrl = getWebhookUrl();
-        // Préfixer le message avec [TYPE: xxx] pour que l'AI Agent génère le bon format
-        // même si Classify & Extract ne détecte pas correctement
-        const n8nMessage = `[TYPE: ${clientType}]\n${message}`;
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: n8nMessage, session_id: sessionId, history: history.slice(-6), type_hint: clientType })
+          body: JSON.stringify({ message, session_id: sessionId, history: history.slice(-6), type_hint: clientType })
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
