@@ -840,7 +840,10 @@
 
         removeTyping();
         const aiResponse = data.response || data.text || data.output || 'Désolé, je n\'ai pas pu traiter votre demande.';
-        const inputType = data.type || detectType(message);
+        // Si n8n retourne 'question', on vérifie le client comme filet de sécurité
+        const nType = data.type;
+        const clientType = detectType(message);
+        const inputType = (nType && nType !== 'question') ? nType : clientType;
 
         addAiMessage(aiResponse, inputType);
         history.push({ role: 'assistant', content: aiResponse });
