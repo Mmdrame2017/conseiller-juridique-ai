@@ -1011,7 +1011,9 @@
         const lineUpper = line.toUpperCase().trim();
         let matched = false;
         for (const sec of sections) {
-          const isHeader = /^#{1,3}\s|^[🔍🔑⚖️📚💡📋🎯⚠️⚔️🎭🔎📂]/.test(line.trim()) || /^[A-ZÀÉÈÊÏÎ\s]{4,}/.test(lineUpper);
+          // isHeader : uniquement les lignes ## markdown (strict) — évite de confondre
+          // le contenu en majuscules (ex: "Juridiction: Tribunal du Travail") avec un titre
+          const isHeader = /^#{1,3}\s/.test(line.trim()) || /^[🔍🔑⚖️📚💡📋🎯⚠️⚔️🎭🔎📂]/.test(line.trim());
           if (isHeader && sec.patterns.some(p => lineUpper.includes(p.toUpperCase()))) {
             currentSection = sec.cls;
             matched = true;
