@@ -105,11 +105,15 @@
       border-radius: var(--radius-sm);
       padding: 12px;
       margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
     }
+    .mode-card:hover { border-color: var(--gold-light); background: rgba(201,168,76,0.06); }
     .mode-card .mode-icon { font-size: 18px; margin-bottom: 6px; }
     .mode-card h4 { font-size: 13px; font-weight: 600; color: var(--text-primary); }
     .mode-card p { font-size: 11px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
     .mode-card.active { border-color: var(--gold); background: var(--gold-dim); }
+    .mode-card.forced { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,168,76,0.25); }
 
     .codes-list { list-style: none; }
     .codes-list li {
@@ -613,22 +617,22 @@
 
     <div class="sidebar-section">
       <h3>Modes</h3>
-      <div class="mode-card" id="card-question">
+      <div class="mode-card" id="card-question" onclick="setForcedMode('question')">
         <div class="mode-icon">🔵</div>
         <h4>Question Juridique</h4>
         <p>Posez une question sur le droit sénégalais et obtenez une réponse précise.</p>
       </div>
-      <div class="mode-card" id="card-consultation">
+      <div class="mode-card" id="card-consultation" onclick="setForcedMode('consultation')">
         <div class="mode-icon">🟡</div>
         <h4>Consultation Juridique</h4>
         <p>Exposez votre situation et recevez une analyse en 8 parties : faits, questions, textes, stratégie, preuves à réunir…</p>
       </div>
-      <div class="mode-card" id="card-strategie">
+      <div class="mode-card" id="card-strategie" onclick="setForcedMode('strategie')">
         <div class="mode-icon">⚔️</div>
         <h4>Stratégie Juridique</h4>
         <p>Obtenez une stratégie de défense : arguments adverses, angles de défense, forces et faiblesses du dossier.</p>
       </div>
-      <div class="mode-card" id="card-simulateur">
+      <div class="mode-card" id="card-simulateur" onclick="setForcedMode('simulateur')">
         <div class="mode-icon">🎭</div>
         <h4>Simulateur de Procès</h4>
         <p>Simulez le déroulement d'une affaire : plaidoiries, questions du juge, verdict probable.</p>
@@ -752,6 +756,7 @@
     let history = [];
     let sessionId = 'session_' + Date.now();
     let isLoading = false;
+    let forcedMode = null; // null = auto-détection, sinon 'question'|'consultation'|'strategie'|'simulateur'
 
     // Default webhook URL – update after workflow activation
     const DEFAULT_WEBHOOK = 'https://mmdrame2017.app.n8n.cloud/webhook/conseiller-juridique-ai';
@@ -1250,6 +1255,24 @@
       }
     }
 
+    function setForcedMode(type) {
+      const allCards = ['question', 'consultation', 'strategie', 'simulateur'];
+      allCards.forEach(t => {
+        const c = document.getElementById('card-' + t);
+        if (c) { c.classList.remove('forced', 'active'); }
+      });
+      if (forcedMode === type) {
+        forcedMode = null;
+      } else {
+        forcedMode = type;
+        const card = document.getElementById('card-' + type);
+        if (card) card.classList.add('forced');
+        updateModeBadge(type);
+      }
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar && sidebar.classList.contains('open')) toggleSidebar();
+    }
+
     function updateModeBadge(type) {
       const badge = document.getElementById('modeBadge');
       const cards = {
@@ -1270,6 +1293,11 @@
     function newConversation() {
       history = [];
       sessionId = 'session_' + Date.now();
+      forcedMode = null;
+      ['question','consultation','strategie','simulateur'].forEach(t => {
+        const c = document.getElementById('card-' + t);
+        if (c) c.classList.remove('forced', 'active');
+      });
       const chatArea = document.getElementById('chatArea');
 
       // Remove all messages
@@ -1331,6 +1359,8 @@
     }
 
     function detectType(message) {
+      if (forcedMode) return forcedMode;
+
       const msg = message.trim();
       // Simulateur : mots-clés explicites de simulation
       const simKeywords = /(simule[rz]?|simulateur|joue le r[oô]le|fais comme si|proc[eè]s simul[eé]|moot court|plaidoirie|que se passerait.il|comment se d[eé]roulerait|si j'allais en justice|si je porte plainte)/i;
