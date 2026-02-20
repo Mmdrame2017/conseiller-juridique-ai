@@ -872,6 +872,9 @@
     // Default webhook URL – update after workflow activation
     const DEFAULT_WEBHOOK = 'https://mmdrame2017.app.n8n.cloud/webhook/conseiller-juridique-ai';
 
+    // API Secret pour authentification (à changer si compromis)
+    const API_SECRET = 'CJ_SN_2026_7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d';
+
     // ========== INIT ==========
     document.addEventListener('DOMContentLoaded', () => {
       // Reset stale URL if it doesn't match the current instance
@@ -1038,7 +1041,10 @@
         const webhookUrl = getWebhookUrl();
         const response = await fetch(webhookUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': API_SECRET
+          },
           body: JSON.stringify({ message, session_id: sessionId, history: history.slice(-6), type_hint: clientType })
         });
 
